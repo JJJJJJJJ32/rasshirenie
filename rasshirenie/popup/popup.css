@@ -419,3 +419,104 @@ input[type="number"]:focus {
   font-size: 12px;
   color: #e74c3c;
 }
+
+/* Actions row */
+.actions-row {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-small {
+  flex: 1;
+  padding: 7px;
+  background: #2a3a5c;
+  border: 1px solid #3a4a6c;
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-small:hover {
+  background: #3a4a6c;
+}
+
+.btn-danger-small {
+  border-color: #c0392b;
+  color: #e74c3c;
+}
+
+.btn-danger-small:hover {
+  background: rgba(192, 57, 43, 0.15);
+}
+
+/* Modal tall */
+.modal-tall {
+  width: 360px;
+  max-height: 500px;
+}
+
+/* Logs content */
+.logs-content {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  max-height: 380px;
+  overflow-y: auto;
+  background: #111;
+  border-radius: 6px;
+  padding: 10px;
+  color: #8f8;
+}
+
+.log-entry {
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #222;
+}
+
+.log-entry .log-time {
+  color: #5c8db8;
+}
+
+.log-entry .log-level-INFO {
+  color: #5c8;
+}
+
+.log-entry .log-level-ERROR {
+  color: #e74c3c;
+}
+
+.log-entry .log-level-DEBUG {
+  color: #888;
+}
+
+.log-entry .log-data {
+  color: #aaa;
+  margin-left: 12px;
+  word-break: break-all;
+}
+
+/* Debug order card */
+.debug-order {
+  background: #111;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.debug-order .debug-id {
+  color: #e8b339;
+  font-weight: bold;
+}
+
+.debug-order .debug-pass {
+  color: #2ecc71;
+}
+
+.debug-order .debug-fail {
+  color: #e74c3c;
+}

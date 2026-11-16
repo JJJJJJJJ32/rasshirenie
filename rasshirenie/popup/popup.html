@@ -76,11 +76,43 @@
     <div class="actions">
       <button id="check-now-btn" class="btn-primary">Проверить сейчас</button>
       <button id="send-ticket-btn" class="btn-secondary">Отправить заявку</button>
-      <button id="disconnect-btn" class="btn-danger">Отключиться</button>
+      <div class="actions-row">
+        <button id="debug-btn" class="btn-small">Отладка</button>
+        <button id="logs-btn" class="btn-small">Логи</button>
+        <button id="reset-btn" class="btn-small">Сбросить</button>
+        <button id="disconnect-btn" class="btn-small btn-danger-small">Отключ.</button>
+      </div>
     </div>
 
     <div id="last-check" class="last-check hidden"></div>
     <div id="main-error" class="error-msg hidden"></div>
+  </div>
+
+  <!-- Модальное окно логов -->
+  <div id="logs-modal" class="modal hidden">
+    <div class="modal-content modal-tall">
+      <div class="modal-header">
+        <h2>Логи</h2>
+        <button class="modal-close" id="logs-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <button id="clear-logs-btn" class="btn-small" style="margin-bottom: 10px;">Очистить логи</button>
+        <div id="logs-content" class="logs-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно отладки -->
+  <div id="debug-modal" class="modal hidden">
+    <div class="modal-content modal-tall">
+      <div class="modal-header">
+        <h2>Отладка заказов</h2>
+        <button class="modal-close" id="debug-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="debug-content" class="logs-content">Загрузка...</div>
+      </div>
+    </div>
   </div>
 
   <!-- Модальное окно "Как получить Golden Key" -->

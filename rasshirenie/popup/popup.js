@@ -46,6 +46,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('send-ticket-btn').addEventListener('click', handleSendTicket);
   $('disconnect-btn').addEventListener('click', handleDisconnect);
 
+  // Debug & Logs
+  $('debug-btn').addEventListener('click', handleDebug);
+  $('debug-close').addEventListener('click', () => $('debug-modal').classList.add('hidden'));
+  $('debug-modal').addEventListener('click', (e) => {
+    if (e.target === $('debug-modal')) $('debug-modal').classList.add('hidden');
+  });
+  $('logs-btn').addEventListener('click', handleLogs);
+  $('logs-close').addEventListener('click', () => $('logs-modal').classList.add('hidden'));
+  $('logs-modal').addEventListener('click', (e) => {
+    if (e.target === $('logs-modal')) $('logs-modal').classList.add('hidden');
+  });
+  $('clear-logs-btn').addEventListener('click', async () => {
+    await chrome.runtime.sendMessage({ type: 'CLEAR_LOGS' });
+    $('logs-content').innerHTML = '<em>Логи очищены</em>';
+  });
+  $('reset-btn').addEventListener('click', async () => {
+    await chrome.storage.local.set({ collectedOrders: { clear: [], problem: [] } });
+    $('stat-clear').textContent = '0';
+    $('stat-problem').textContent = '0';
+    showNotification('Сброс', 'Собранные заказы очищены. Следующая проверка начнёт заново.');
+  });
+
   // Settings change listeners
   $('threshold').addEventListener('change', saveSettings);
   $('check-interval').addEventListener('change', saveSettings);
@@ -234,4 +256,62 @@ function showNotification(title, message) {
     title: title,
     message: message
   });
+}
+
+// ---------- Logs ----------
+async function handleLogs() {
+  const resp = await chrome.runtime.sendMessage({ type: 'GET_LOGS' });
+  const content = $('logs-content');
+  if (!resp || !resp.logs || resp.logs.length === 0) {
+    content.innerHTML = '<em>Логов нет</em>';
+  } else {
+    content.innerHTML = resp.logs.map(entry => {
+      const d = new Date(entry.time);
+      const timeStr = d.toLocaleTimeString('ru-RU');
+      const dataStr = entry.data ? `<div class="log-data">${entry.data}</div>` : '';
+      return `<div class="log-entry">
+        <span class="log-time">[${timeStr}]</span>
+        <span class="log-level-${entry.level}">${entry.level}</span>
+        ${entry.message}
+        ${dataStr}
+      </div>`;
+    }).join('');
+    // Scroll to bottom
+    content.scrollTop = content.scrollHeight;
+  }
+  $('logs-modal').classList.remove('hidden');
+}
+
+// ---------- Debug ----------
+async function handleDebug() {
+  const content = $('debug-content');
+  content.textContent = 'Загрузка...';
+  $('debug-modal').classList.remove('hidden');
+
+  const resp = await chrome.runtime.sendMessage({ type: 'GET_RAW_ORDERS' });
+  if (!resp || !resp.ok) {
+    content.innerHTML = `<em style="color:#e74c3c">Ошибка: ${resp ? resp.error : 'нет ответа'}</em>`;
+    return;
+  }
+
+  let html = `<div style="margin-bottom:10px;color:#e8b339;">
+    Всего заказов: ${resp.totalOrders} | След. страница: ${resp.nextPageId || 'нет'}
+  </div>`;
+
+  if (resp.orders.length === 0) {
+    html += '<em>Заказы не найдены. Возможно, Golden Key истёк или нет оплаченных заказов.</em>';
+  } else {
+    for (const o of resp.orders) {
+      const ageStr = o.ageHours !== null ? `${o.ageHours}ч` : 'неизвестно';
+      const passClass = o.passes24h ? 'debug-pass' : 'debug-fail';
+      const passStr = o.passes24h ? '✓ 24ч+' : `✗ ${ageStr}`;
+      html += `<div class="debug-order">
+        <span class="debug-id">#${o.id}</span> | ${o.buyer} | ${o.desc}
+        <span class="${passClass}">${passStr}</span><br>
+        дата: "${o.dateText}" | ts: ${o.timestamp} | класс: ${o.classes} | статус: ${o.status}
+      </div>`;
+    }
+  }
+
+  content.innerHTML = html;
 }
