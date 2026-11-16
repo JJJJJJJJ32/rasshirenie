@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FunPay Auto-Confirm</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Экран ввода Golden Key -->
+  <div id="setup-screen" class="screen">
+    <div class="header">
+      <div class="logo">FP</div>
+      <h1>FunPay Auto-Confirm</h1>
+    </div>
+    <p class="subtitle">Введите ваш Golden Key для подключения</p>
+    <div class="input-group">
+      <label for="golden-key">Golden Key</label>
+      <input type="password" id="golden-key" placeholder="Вставьте сюда ваш golden_key">
+      <button class="btn-help" id="how-to-get">Как получить Golden Key?</button>
+    </div>
+    <button id="connect-btn" class="btn-primary">Подключиться</button>
+    <div id="setup-error" class="error-msg hidden"></div>
+  </div>
+
+  <!-- Экран подключения (loading) -->
+  <div id="loading-screen" class="screen hidden">
+    <div class="spinner"></div>
+    <p id="loading-text">Подключение к FunPay...</p>
+  </div>
+
+  <!-- Главный экран -->
+  <div id="main-screen" class="screen hidden">
+    <div class="header">
+      <div class="logo">FP</div>
+      <h1>FunPay Auto-Confirm</h1>
+    </div>
+
+    <div class="status-badge" id="connection-status">
+      <span class="status-dot connected"></span>
+      <span>Подключено</span>
+    </div>
+
+    <div class="user-info">
+      <span id="username-display"></span>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-clear">0</div>
+        <div class="stat-label">Без проблем</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-problem">0</div>
+        <div class="stat-label">С проблемами</div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="setting-row">
+        <label for="threshold">Лимит заказов для отправки</label>
+        <input type="number" id="threshold" value="10" min="1" max="100">
+      </div>
+      <div class="setting-row">
+        <label for="check-interval">Интервал проверки (мин)</label>
+        <input type="number" id="check-interval" value="30" min="5" max="1440">
+      </div>
+      <div class="setting-row">
+        <label class="toggle-label">
+          <input type="checkbox" id="auto-send" checked>
+          <span>Автоотправка заявки</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="check-now-btn" class="btn-primary">Проверить сейчас</button>
+      <button id="send-ticket-btn" class="btn-secondary">Отправить заявку</button>
+      <button id="disconnect-btn" class="btn-danger">Отключиться</button>
+    </div>
+
+    <div id="last-check" class="last-check hidden"></div>
+    <div id="main-error" class="error-msg hidden"></div>
+  </div>
+
+  <!-- Модальное окно "Как получить Golden Key" -->
+  <div id="help-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Как получить Golden Key</h2>
+        <button class="modal-close" id="help-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ol class="help-list">
+          <li>Откройте <strong>funpay.com</strong> и войдите в свой аккаунт</li>
+          <li>Нажмите <strong>F12</strong> (Инструменты разработчика)</li>
+          <li>Перейдите на вкладку <strong>Application</strong> (Приложение)</li>
+          <li>В левом меню найдите <strong>Cookies → https://funpay.com</strong></li>
+          <li>Найдите cookie с именем <strong>golden_key</strong></li>
+          <li>Скопируйте её значение — это и есть ваш Golden Key</li>
+        </ol>
+        <p class="help-note">⚠️ Никому не передавайте ваш Golden Key — он даёт доступ к вашему аккаунту FunPay.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
