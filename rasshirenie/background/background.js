@@ -1056,27 +1056,17 @@ function buildTicketPayload(userInfo, orders) {
     ? orders.problem.map(o => '#' + o.id).join(' ')
     : 'нет';
 
-  // Build detailed info for each order
-  const clearDetails = orders.clear.map(o =>
-    `#${o.id} — ${o.description} (покупатель: ${o.buyer}, дата: ${o.dateText}, сумма: ${o.price} ${o.currency})`
-  ).join('\n');
-
-  // For problem orders, include the specific problem signals
-  const problemDetails = orders.problem.map(o => {
-    const signals = o.problemSignals ? o.problemSignals.join(', ') : 'неизвестно';
-    return `#${o.id} — ${o.description} (покупатель: ${o.buyer}, дата: ${o.dateText}, сумма: ${o.price} ${o.currency}, проблема: ${signals})`;
-  }).join('\n');
-
+  // В теле заявки указываем ТОЛЬКО номера заказов.
+  // Описание товара, покупатель, дата и сумма поддержке не нужны —
+  // по номеру заказа они всё найдут сами.
   const bodyHtml =
     `<p>Здравствуйте! Прошу подтвердить заказы, по которым прошло более 24 часов с момента оплаты.</p>` +
     `<p><br></p>` +
     `<p><strong>Заказы без проблем (покупатель просто забыл подтвердить):</strong></p>` +
     `<p>${clearList || 'нет'}</p>` +
-    (clearDetails ? `<p><em>${clearDetails}</em></p>` : '') +
     `<p><br></p>` +
     `<p><strong>Заказы с проблемами (прошло 24 часа, есть претензии/спор/возврат):</strong></p>` +
-    `<p>${problemList}</p>` +
-    (problemDetails ? `<p><em>${problemDetails}</em></p>` : '');
+    `<p>${problemList}</p>`;
 
   return {
     nick,
